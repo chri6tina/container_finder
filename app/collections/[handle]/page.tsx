@@ -26,13 +26,15 @@ const COLLECTIONS: Record<string, { title: string; where: any }> = {
   }
 };
 
-export async function generateMetadata({ params }: { params: { handle: string } }) {
-  const meta = COLLECTIONS[params.handle];
+export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params;
+  const meta = COLLECTIONS[handle];
   return { title: meta ? `${meta.title} | Container Finder` : 'Collection | Container Finder' };
 }
 
-export default async function CollectionPage({ params }: { params: { handle: string } }) {
-  const config = COLLECTIONS[params.handle];
+export default async function CollectionPage({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params;
+  const config = COLLECTIONS[handle];
   if (!config) {
     return (
       <div className="py-12">

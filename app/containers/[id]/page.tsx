@@ -10,8 +10,9 @@ async function getData(idOrSegment: string) {
   return product;
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const id = extractIdFromSegment(params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id: raw } = await params;
+  const id = extractIdFromSegment(raw);
   const product = await prisma.product.findUnique({ where: { id }, include: { size: true } });
   if (!product) return { title: 'Not Found' };
   return {
@@ -21,8 +22,9 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const product = await getData(params.id);
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const product = await getData(id);
   if (!product) {
     return (
       <div className="py-12">
