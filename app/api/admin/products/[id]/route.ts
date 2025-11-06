@@ -5,8 +5,8 @@ import type { Prisma } from '@prisma/client';
 import { requireAdmin } from '@/lib/adminAuth';
 import { rateLimit, ipKey } from '@/lib/rateLimit';
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {
     requireAdmin(req);
@@ -44,8 +44,8 @@ const updateSchema = z.object({
   heightCm: z.number().optional().nullable()
 });
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {
     requireAdmin(req);
