@@ -15,6 +15,7 @@ type Product = {
   size?: {
     capacityMl?: number | null;
     capacityOz?: number | null;
+    weightKg?: number | null;
   } | null;
   _count?: { clicks: number };
 };
