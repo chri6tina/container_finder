@@ -1,7 +1,10 @@
 import { prisma } from '@/lib/db';
 
-export default async function ComparePage({ searchParams }: { searchParams: { ids?: string } }) {
-  const ids = (searchParams.ids ?? '').split(',').filter(Boolean).slice(0, 4);
+export default async function ComparePage({ searchParams }: any) {
+  const resolvedParams =
+    searchParams && typeof searchParams.then === 'function' ? await searchParams : searchParams || {};
+  const idsParam = resolvedParams?.ids as string | undefined;
+  const ids = (idsParam ?? '').split(',').filter(Boolean).slice(0, 4);
   const raw = ids.length
     ? await prisma.product.findMany({ where: { id: { in: ids } }, include: { size: true } })
     : [];
@@ -42,7 +45,7 @@ export default async function ComparePage({ searchParams }: { searchParams: { id
               <tr className="border-t">
                 <td className="p-3 text-gray-600">Features</td>
                 {items.map((p: any) => (
-                  <td key={p.id} className="p-3">{p.features.map((f) => f.replaceAll('_', ' ').toLowerCase()).join(', ')}</td>
+                  <td key={p.id} className="p-3">{p.features.map((f: string) => f.replaceAll('_', ' ').toLowerCase()).join(', ')}</td>
                 ))}
               </tr>
               <tr className="border-t">
