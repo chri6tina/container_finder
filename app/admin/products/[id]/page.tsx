@@ -3,8 +3,10 @@ import AdminEditProductForm from '@/components/admin/AdminEditProductForm';
 
 export const metadata = { title: 'Admin · Edit Product', robots: { index: false } };
 
-export default async function AdminEditProductPage({ params }: { params: { id: string } }) {
-  const p = await prisma.product.findUnique({ where: { id: params.id }, include: { size: true } });
+// In some Next.js versions/types, params may be typed as a Promise in dynamic routes.
+export default async function AdminEditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const p = await prisma.product.findUnique({ where: { id }, include: { size: true } });
   if (!p) {
     return (
       <main className="py-8">
