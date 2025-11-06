@@ -1,0 +1,84 @@
+// Local dev with sqlite; switch provider to postgresql for production
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Material {
+  GLASS
+  PLASTIC
+  SILICONE
+  STEEL
+}
+
+enum Shape {
+  ROUND
+  SQUARE
+  RECTANGULAR
+  OVAL
+  OTHER
+}
+
+model Product {
+  id           String    @id @default(cuid())
+  asin         String    @unique
+  title        String
+  brand        String?
+  imagesText   String    // pipe-delimited URLs
+  category     String?
+  material     Material
+  shape        Shape?
+  tagsText     String    @default("") // comma-delimited helper ",tag,tag,"
+  featuresText String    @default("") // comma-delimited helper ",feature,feature,"
+  affiliateUrl String
+  description  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  size         Size?
+  clicks       Click[]
+
+  @@index([createdAt])
+  @@index([material])
+}
+
+model Size {
+  id         String  @id @default(cuid())
+  productId  String  @unique
+  product    Product @relation(fields: [productId], references: [id])
+  capacityMl Float?
+  capacityOz Float?
+  weightKg   Float?
+  lengthCm   Float?
+  widthCm    Float?
+  heightCm   Float?
+
+  @@index([capacityMl])
+  @@index([capacityOz])
+  @@index([lengthCm, widthCm, heightCm])
+}
+
+model Click {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  source    String?
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// Note: Using SQLite for local dev -> enums and scalar lists are represented as strings/JSON
+
+

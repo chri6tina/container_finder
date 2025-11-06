@@ -1,0 +1,24 @@
+# Copy these lines into BOTH .env and .env.local (project root).
+# IMPORTANT:
+# - No quotes, no < >, no trailing spaces
+# - One single line per key
+# - Restart dev after changes: rm -rf .next && npm run dev
+# - Verify at /api/debug/supabase (expect status 200 for both checks)
+
+NEXT_PUBLIC_SUPABASE_URL=https://iteexdfevjuoakvbvpuj.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=PASTE_YOUR_ANON_PUBLIC_KEY_JWT_HERE
+SUPABASE_SERVICE_ROLE_KEY=PASTE_YOUR_SERVICE_ROLE_KEY_JWT_HERE
+
+# Use your Supabase pooler (port 6543). Password must be URL-encoded (! -> %21).
+DATABASE_URL=postgresql://postgres:Sailormae1%21@db.iteexdfevjuoakvbvpuj.supabase.co:6543/postgres?pgbouncer=true&connection_limit=1&sslmode=require
+
+# Admin settings
+ADMIN_EMAILS=vendsmartjacksonville@gmail.com
+ADMIN_SECRET=123
+
+# After saving:
+# 1) rm -rf .next && npm run dev
+# 2) Open /api/debug/supabase → anonCheck.status=200, serviceCheck.status=200
+# 3) Visit /admin/login and sign in with your Supabase email/password
+
+

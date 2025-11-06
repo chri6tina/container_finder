@@ -1,0 +1,28 @@
+# dependencies
+node_modules
+
+# next
+.next/
+out/
+
+# env
+.env
+.env.local
+
+# prisma
+prisma/*.db
+prisma/migrations/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# coverage
+coverage/
+
+# misc
+.DS_Store
+
+
