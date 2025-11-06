@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { requireAdmin } from '@/lib/adminAuth';
 import { rateLimit, ipKey } from '@/lib/rateLimit';
@@ -38,19 +39,19 @@ export async function GET(request: Request) {
   if (hasImages) AND.push({ imagesText: { not: '' } });
   if (AND.length) where.AND = AND;
 
-  const orderBy = (() => {
+  const orderBy: Prisma.ProductOrderByWithRelationInput[] = (() => {
     switch (sort) {
       case 'createdAsc':
-        return [{ createdAt: 'asc' }];
+        return [{ createdAt: 'asc' as Prisma.SortOrder }];
       case 'titleAsc':
-        return [{ title: 'asc' }];
+        return [{ title: 'asc' as Prisma.SortOrder }];
       case 'titleDesc':
-        return [{ title: 'desc' }];
+        return [{ title: 'desc' as Prisma.SortOrder }];
       case 'clicksDesc':
-        return [{ clicks: { _count: 'desc' } }, { createdAt: 'desc' }];
+        return [{ clicks: { _count: 'desc' as Prisma.SortOrder } }, { createdAt: 'desc' as Prisma.SortOrder }];
       case 'createdDesc':
       default:
-        return [{ createdAt: 'desc' }];
+        return [{ createdAt: 'desc' as Prisma.SortOrder }];
     }
   })();
 
