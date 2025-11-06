@@ -2,6 +2,26 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { requireAdmin } from '@/lib/adminAuth';
 
+async function findAdminUserByEmail(email: string) {
+  const normalizedEmail = String(email).toLowerCase();
+  const perPage = 200;
+  for (let page = 1; page < 1000; page += 1) {
+    const response = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+    if (response.error) {
+      throw response.error;
+    }
+    const users = response.data.users ?? [];
+    const match = users.find((u) => (u.email || '').toLowerCase() === normalizedEmail);
+    if (match) {
+      return match;
+    }
+    if (users.length < perPage) {
+      break;
+    }
+  }
+  return null;
+}
+
 export async function POST(request: Request) {
   try {
     requireAdmin(request);
@@ -14,9 +34,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'email and password are required' }, { status: 400 });
     }
     // Check if user exists
-    const existing = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1, email });
-    const user =
-      existing.data?.users?.find((u) => (u.email || '').toLowerCase() === String(email).toLowerCase()) || null;
+    const user = await findAdminUserByEmail(email);
     if (!user) {
       const res = await supabaseAdmin.auth.admin.createUser({
         email,
